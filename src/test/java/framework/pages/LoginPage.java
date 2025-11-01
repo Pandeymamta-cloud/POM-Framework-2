@@ -1,5 +1,7 @@
 package framework.pages;
 
+import com.aventstack.chaintest.plugins.ChainTestListener;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -10,30 +12,30 @@ public class LoginPage extends BasePage {
         super(driver);
     }
 
-    @FindBy(xpath = "//input[@ID='email']")
+    @FindBy(xpath = "//input[@id='email']")
     public WebElement emailInput;
 
-    @FindBy(xpath = "//input[@ID='password']")
+    @FindBy(xpath = "//input[@id='password']")
     public WebElement passwordInput;
 
-    @FindBy(xpath = "//button[@type='submit']")
+    @FindBy(xpath = "//button[text()='Submit']")
     public WebElement SubmitButton;
 
     @FindBy(xpath = "//button[@id='signup']")
     public WebElement SignupButton;
 
-    @FindBy(xpath = "//span [Text()=\"Incorrect username or password\"]")
+    @FindBy(xpath = "//span[text()=\"Incorrect username or password\"]")
     public WebElement errorMessage;
 
-    @FindBy(xpath = "//h1[Text()='Contact List']")
+    @FindBy(xpath = "//h1[text()='Contact List']")
     public WebElement ContactlistHeader;
 
 
 
     public void login(String email, String password) {
         emailInput.sendKeys(email);
-        passwordInput.sendKeys(password);
-        SubmitButton.click();
+        passwordInput.sendKeys(password, Keys.ENTER);
+//        SubmitButton.click();
     }
 
     public String loginWithInvalidCreds(String email, String password) {
@@ -44,6 +46,7 @@ public class LoginPage extends BasePage {
         emailInput.sendKeys(email);
         passwordInput.sendKeys(password);
         SubmitButton.click();
+        ChainTestListener.log("Login Un successful:" + errorMessage.getText());
         // Wait for error message to appear (simple sleep for demo, use WebDriverWait in real code)
         try {
             Thread.sleep(1000);
@@ -62,7 +65,8 @@ public class LoginPage extends BasePage {
         if (!isContactlistDisplayed()) {
             throw new AssertionError("Login failed: Contactlist not displayed.");
         }else {
-            System.out.println("Login successful: Dashboard is displayed." + ContactlistHeader.getText());
+            ChainTestListener.log("Login successful: Dashboard is displayed." + ContactlistHeader.getText());
+//            System.out.println("Login successful: Dashboard is displayed." + ContactlistHeader.getText());
         }
     }
 }
